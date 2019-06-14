@@ -1,0 +1,39 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usepackage{xcolor}
+\usetikzlibrary{shapes,arrows}
+\begin{document}
+\definecolor{mblue}{rgb}{187,222,251}
+\tikzstyle{block} = [draw, rectangle, 
+    minimum height=5em, minimum width=8em]
+\tikzstyle{sum} = [draw, circle, node distance=2cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\pagenumbering{gobble}
+
+% The block diagram code is probably more verbose than necessary
+\begin{tikzpicture}[auto, node distance=4cm,>=latex']
+    % We start by placing the blocks
+    \node [input, name=input] {};
+    \node [sum, right of=input] (sum) {};
+    \node [block, right of=sum] (controller) {Controlador PID};
+    \node [block, right of=controller,
+            node distance=5cm] (system) {$\frac{K_a s + K_b}{K_3 s^3 + K_2 s^2 + K_1 s + K_0}$};
+    % We draw an edge between the controller and system block to 
+    % calculate the coordinate u. We need it to place the measurement block. 
+    \draw [->] (controller) -- node[name=u] {$\delta$} (system);
+    \node [output, right of=system] (output) {};
+    \node [block, below of=u] (measurements) {Sensor};
+
+    % Once the nodes are placed, connecting them is easy. 
+    \draw [draw,->] (input) -- node {$r$} (sum);
+    \draw [->] (sum) -- node {$e$} (controller);
+    \draw [->] (system) -- node [name=y] {$\phi$}(output);
+    \draw [->] (y) |- (measurements);
+    \draw [->] (measurements) -| node[pos=0.99] {$-$} 
+    node [near end] {$\alpha_m$} (sum);
+\end{tikzpicture}
+
+\end{document}
