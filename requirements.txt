@@ -1,2 +1,4 @@
 control==0.8.2
 matplotlib==3.1.0
+ipywidgets
+jupyter_contrib_nbextensions
